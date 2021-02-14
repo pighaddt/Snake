@@ -13,9 +13,11 @@ class SankeViewModel : ViewModel(){
     var gameState = MutableLiveData<GameState>()
     private var snakeBody = mutableListOf<Position>()
     private var direction = Direction.LEFT
+    private var point : Int = 0
 
 
     fun start(){
+        score.postValue(point)
         snakeBody.apply{
             add(Position(10, 10))
             add(Position(11, 10))
@@ -32,7 +34,7 @@ class SankeViewModel : ViewModel(){
                     Direction.DOWM -> y++
                     Direction.TOP -> y--
                 }
-                if (x < 0 || x >= 20 || y <  0 || y >=  20 ){
+                if ( snakeBody.contains(this) || x < 0 || x >= 20 || y <  0 || y >=  20 ){
                     cancel()
                     gameState.postValue(GameState.GAME_OVER)
                 }
@@ -41,6 +43,8 @@ class SankeViewModel : ViewModel(){
             if (snakeHead != applePosition){
                 snakeBody.removeLast()
             }else{
+                point+=100
+                score.postValue(point)
                 generateApple()
             }
             body.postValue(snakeBody)
@@ -53,7 +57,9 @@ class SankeViewModel : ViewModel(){
     }
 
     fun generateApple(){
-        applePosition = Position(Random.nextInt(20), Random.nextInt(20))
+        do {
+            applePosition = Position(Random.nextInt(20), Random.nextInt(20))
+        }while (snakeBody.contains(applePosition))
         apple.postValue(applePosition)
     }
 

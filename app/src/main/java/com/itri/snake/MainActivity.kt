@@ -26,7 +26,7 @@ class MainActivity : AppCompatActivity() {
         })
 
         snakeViewModel.score.observe(this, Observer {
-
+            score.text = it.toString()
         })
         snakeViewModel.gameState.observe(this, Observer {
             if (it == GameState.GAME_OVER) {
